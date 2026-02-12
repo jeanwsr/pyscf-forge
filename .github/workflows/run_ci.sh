@@ -11,7 +11,7 @@ sudo apt-get -qq install \
 python -m pip install --upgrade pip
 pip install "scipy<1.16"
 pip install pytest
-pip install "pyscf=2.9"
+pip install "pyscf==2.9"
 pip install .
 
 pip install trexio
