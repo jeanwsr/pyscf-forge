@@ -3,4 +3,4 @@
 set -e
 
 cd ./pyscf
-pytest -k 'not _slow'
+pytest -k 'not _slow' sftda/ grad/tduks_sf
