@@ -3,4 +3,4 @@
 set -e
 
 cd ./pyscf
-pytest -k 'not _slow' --durations 20
+pytest -k 'not _slow' --durations 20 dh
