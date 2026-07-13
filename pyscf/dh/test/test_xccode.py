@@ -85,3 +85,22 @@ class TestXCCode(unittest.TestCase):
         (xc2, _, d1, d2), _ = parse_xc_dh("HF, 0.5*MP2(0.5, 0.3)")
         self.assertAlmostEqual(c1, d1)
         self.assertAlmostEqual(c2, d2)
+
+    def test_custom_func_registration(self):
+        from pyscf.dh.xccode import parse_xc_dh
+        (xc, xc_n, c_os, c_ss), xc_add = parse_xc_dh('PTPSS')
+        from pyscf.dft.libxc import _CUSTOM_FUNC_R
+        self.assertIn(xc, _CUSTOM_FUNC_R,
+                      f"registered name {xc!r} not in _CUSTOM_FUNC_R: "
+                      f"{list(_CUSTOM_FUNC_R.keys())}")
+        # hybrid_coeff lookup (CI failure point)
+        from pyscf import dft
+        ni = dft.numint.NumInt()
+        ni.hybrid_coeff(xc)
+        # Full DFDH construction
+        from pyscf import gto
+        from pyscf.dh import DFDH
+        mol = gto.M(atom="O; H 1 0.94; H 1 0.94 2 104.5", basis="cc-pVDZ")
+        mf = DFDH(mol, xc='PTPSS')
+        self.assertIn(mf.xc, _CUSTOM_FUNC_R,
+                      f"after DFDH init, {mf.xc!r} not in _CUSTOM_FUNC_R")
